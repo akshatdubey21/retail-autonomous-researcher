@@ -49,6 +49,24 @@ GROQ_MODEL=llama-3.3-70b-versatile
 streamlit run app.py
 ```
 
+## Docker
+
+Build the image:
+
+```bash
+docker build -t retail-autonomous-researcher .
+```
+
+Run it from Docker Desktop or the CLI:
+
+```bash
+docker run --rm -p 8501:8501 --env-file .env -v "${PWD}\\knowledge_repo:/app/knowledge_repo" retail-autonomous-researcher
+```
+
+Open `http://localhost:8501` after the container starts.
+
+If Docker Desktop is not already running on Windows, start it first so the Linux engine is available.
+
 ## How It Works
 
 1. The user submits a retail research prompt.
