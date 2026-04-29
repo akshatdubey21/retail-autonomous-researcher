@@ -6,3 +6,8 @@ langchain-groq
 tavily-python
 python-dotenv
 pydantic
+pypdf
+sentence-transformers
+faiss-cpu
+transformers
+torch
