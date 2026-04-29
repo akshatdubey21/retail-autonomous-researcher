@@ -118,3 +118,4 @@ If Docker Desktop is not already running on Windows, start it first so the Linux
 - Agentic AI features require valid Groq and Tavily API keys.
 - RAG features run locally and do not require paid API keys.
 - Reports are saved locally as plain text for easy reuse and versioning.
+- updating to run CI/CD pipeline
