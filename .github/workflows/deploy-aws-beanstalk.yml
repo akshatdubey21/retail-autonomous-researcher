@@ -13,37 +13,24 @@ jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
 
-    env:
-      DOCKER_IMAGE: ${{ secrets.DOCKERHUB_USERNAME }}/retail-autonomous-researcher
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-
-      - name: Log in to Docker Hub
-        uses: docker/login-action@v3
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
-
-      - name: Build and push Docker image
-        uses: docker/build-push-action@v5
-        with:
-          context: .
-          file: ./Dockerfile
-          push: true
-          tags: |
-            ${{ env.DOCKER_IMAGE }}:latest
-            ${{ env.DOCKER_IMAGE }}:${{ github.sha }}
-
-      - name: Prepare Dockerrun bundle
+      - name: Prepare Elastic Beanstalk source bundle
         run: |
-          mkdir -p deploy
-          cp Dockerrun.aws.json deploy/Dockerrun.aws.json
-          (cd deploy && zip -r ../beanstalk-deploy.zip Dockerrun.aws.json)
+          zip -r app.zip . \
+            -x ".git/*" \
+               ".venv/*" \
+               "__pycache__/*" \
+               "*.pyc" \
+               "*.pyo" \
+               "*.pyd" \
+               ".env" \
+               ".env.*" \
+               "Dockerrun.aws.json" \
+               "data/*" \
+               "knowledge_repo/*"
 
       - name: Deploy to Elastic Beanstalk
         uses: einaregilsson/beanstalk-deploy@v22
@@ -54,4 +41,4 @@ jobs:
           application_name: ${{ secrets.AWS_EB_APPLICATION_NAME }}
           environment_name: ${{ secrets.AWS_EB_ENVIRONMENT_NAME }}
           version_label: ${{ github.sha }}
-          deployment_package: beanstalk-deploy.zip
+          deployment_package: app.zip
